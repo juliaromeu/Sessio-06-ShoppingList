@@ -2,11 +2,14 @@ package edu.upc.eseiaat.pma.shoppinglist;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -52,16 +55,33 @@ public class ShoppingListActivity extends AppCompatActivity {
             }
         });
 
+        edit_item.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                addItem();
+                return true;
+            }
+        });
+
         //Se necesita ponerlo siempre en una lista, lo añadimos al inicio del proyecto
         list.setAdapter(adapter);
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> list, View item, int pos, long id) {
+                return true;
+            }
+        })
     }
 
     private void addItem() {
         String item_text= edit_item.getText().toString();
         //Evitar cuadros en blanco. Añadir solo si hay algo escrito.
         if (!item_text.isEmpty()){
-        itemList.add(item_text);
-        adapter.notifyDataSetChanged();
+            itemList.add(item_text);
+            adapter.notifyDataSetChanged();
+            //Borrar la caja de texto cuando ya he añadido el item
+            edit_item.setText("");
         }
     }
 }
