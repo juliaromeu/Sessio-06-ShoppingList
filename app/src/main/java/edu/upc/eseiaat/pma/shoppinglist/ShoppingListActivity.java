@@ -1,5 +1,7 @@
 package edu.upc.eseiaat.pma.shoppinglist;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -66,12 +68,33 @@ public class ShoppingListActivity extends AppCompatActivity {
         //Se necesita ponerlo siempre en una lista, lo añadimos al inicio del proyecto
         list.setAdapter(adapter);
 
+        //ELIMINAR ITEMS
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> list, View item, int pos, long id) {
+                maybeRemoveItem(pos);
                 return true;
             }
-        })
+        });
+    }
+
+    private void maybeRemoveItem(final int pos) {
+        //Cuadro de dialogo para confirmar que se quiere eliminar
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.confirm);
+        String fmt = getResources().getString(R.string.confirm_message);
+        builder.setMessage(String.format(fmt, itemList.get(pos)));
+        builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                itemList.remove(pos);
+                adapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.create().show();
+
+
     }
 
     private void addItem() {
